@@ -18,7 +18,12 @@ const UserSchema = mongoose.Schema({
     password:{
         type: String,
         required: true
-    }
+    },
+    bills:[{
+        date: Date,
+        description: String,
+        value: Number
+    }]
 });
 
 const User = module.exports = mongoose.model('User', UserSchema);
@@ -47,4 +52,14 @@ module.exports.comparePassword = function(candidatePassword, hash, callback){
     if(err) throw err;
     callback(null, isMatch);
 })}
+
+module.exports.findBillbyID = function(id, bills){
+    for (var i = 0; i < bills.length; i++){ 
+        if (JSON.stringify(bills[i]['_id']) === JSON.stringify(id)){
+            return i;
+        }
+    }
+    return null;
+}
+
 

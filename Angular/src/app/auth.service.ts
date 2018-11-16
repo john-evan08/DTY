@@ -5,6 +5,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { Data } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { Bill } from './bill';
 
 const httpOptions = {
     headers: new HttpHeaders({
@@ -55,6 +56,50 @@ export class AuthService {
     );
     } else {
       return this.http.get<Data>('http://localhost:3000/users/profile', httpOptions)
+    .pipe(
+      catchError(this.handleError)
+    );
+    }
+  }
+
+  addBill(bill: Bill): Observable<Data> {
+    this.loadToken();
+    if (this.authToken) {
+      const httpOptions2 = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': this.authToken
+        })
+      };
+    return this.http.put<Data>('http://localhost:3000/users/profile', bill, httpOptions2)
+    .pipe(
+      catchError(this.handleError)
+    );
+    } else {
+      return this.http.put<Data>('http://localhost:3000/users/profile', bill, httpOptions)
+    .pipe(
+      catchError(this.handleError)
+    );
+    }
+  }
+
+  deleteBill(bill): Observable<Data> {
+    this.loadToken();
+    const id: string = bill['_id'] ;
+    const url = 'http://localhost:3000/users/profile/' + id;
+    if (this.authToken) {
+      const httpOptions2 = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': this.authToken
+        })
+      };
+    return this.http.delete<Data>(url, httpOptions2)
+    .pipe(
+      catchError(this.handleError)
+    );
+    } else {
+      return this.http.delete<Data>(url, httpOptions)
     .pipe(
       catchError(this.handleError)
     );

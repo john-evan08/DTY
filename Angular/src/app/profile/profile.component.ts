@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { User } from '../user';
 import { AuthService } from '../auth.service';
 import { MessageService } from '../message.service';
+import { Bill } from '../bill';
 
 @Component({
   selector: 'app-profile',
@@ -12,29 +13,69 @@ import { MessageService } from '../message.service';
 })
 export class ProfileComponent implements OnInit {
 
-  user1: Object;
   user = new User();
-  Str: string;
+  bills: Bill[] = [];
+  modeadd = false;
+  bill = new Bill();
 
   constructor(
     private messageService: MessageService,
-    private authService: AuthService,
+    public authService: AuthService,
     private router: Router) { }
 
   ngOnInit() {
 
     this.authService.getProfile().subscribe(profile => {
-      this.user1 = profile['user'];
-      this.user.name = this.user1['name'];
-      this.user.username = this.user1['username'];
-      this.user.email = this.user1['email'];
-      this.user.password = this.user1['password'];
+      this.user = profile['user'];
+      this.bills = this.user['bills'];
       },
       err => {
-        console.log(err);
-        this.messageService.add('unauthorized to login');
+        this.messageService.add('cannot login');
         return false;
       });
   }
 
+
+addBill() {
+  this.modeadd = true;
 }
+
+
+
+onSubmit() {
+  if (!this.modeadd) {
+    return null;
+  }
+  this.modeadd = false;
+  this.authService.addBill(this.bill).subscribe(data => {
+    if (data.success) {
+      this.messageService.add( data.msg + ': you have successfully added your bill');
+      this.ngOnInit();
+    } else {
+      this.messageService.add( data.msg + ': something went wrong, please edit' );
+    }
+});
+}
+
+deleteBill(bill) {
+  console.log(bill);
+  this.authService.deleteBill(bill).subscribe(data => {
+    console.log(data);
+    if (data.success) {
+      this.messageService.add( data.msg + ': you have successfully deleted your bill');
+      this.ngOnInit();
+
+    } else {
+      this.messageService.add( data.msg + ': something went wrong, please edit' );
+    }
+});
+}
+
+  stringify(date) {
+    return JSON.stringify(date);
+  }
+
+}
+
+
+

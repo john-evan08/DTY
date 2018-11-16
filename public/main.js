@@ -336,6 +336,42 @@ var AuthService = /** @class */ (function () {
                 .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError));
         }
     };
+    AuthService.prototype.addBill = function (bill) {
+        this.loadToken();
+        if (this.authToken) {
+            var httpOptions2 = {
+                headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpHeaders"]({
+                    'Content-Type': 'application/json',
+                    'Authorization': this.authToken
+                })
+            };
+            return this.http.put('http://localhost:3000/users/profile', bill, httpOptions2)
+                .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError));
+        }
+        else {
+            return this.http.put('http://localhost:3000/users/profile', bill, httpOptions)
+                .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError));
+        }
+    };
+    AuthService.prototype.deleteBill = function (bill) {
+        this.loadToken();
+        var id = bill['_id'];
+        var url = 'http://localhost:3000/users/profile/' + id;
+        if (this.authToken) {
+            var httpOptions2 = {
+                headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpHeaders"]({
+                    'Content-Type': 'application/json',
+                    'Authorization': this.authToken
+                })
+            };
+            return this.http.delete(url, httpOptions2)
+                .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError));
+        }
+        else {
+            return this.http.delete(url, httpOptions)
+                .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError));
+        }
+    };
     AuthService.prototype.storeUserData = function (token, user) {
         localStorage.setItem('id_token', token);
         localStorage.setItem('user', JSON.stringify(user));
@@ -381,6 +417,26 @@ var AuthService = /** @class */ (function () {
         __metadata("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"]])
     ], AuthService);
     return AuthService;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/bill.ts":
+/*!*************************!*\
+  !*** ./src/app/bill.ts ***!
+  \*************************/
+/*! exports provided: Bill */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Bill", function() { return Bill; });
+var Bill = /** @class */ (function () {
+    function Bill() {
+    }
+    return Bill;
 }());
 
 
@@ -807,7 +863,7 @@ var NavbarComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf='user'>\n  <h2 class= 'pageheader'>{{user.name}}</h2>\n    <div class=\"row\">\n      <div class=\"col-xs-9\">{{ user.username }}</div>\n    </div>\n    <div class=\"row\">\n      <div class=\"col-xs-9\">{{ user.email }}</div>\n    </div>\n\n</div>\n\n"
+module.exports = "<div *ngIf='user'>\n  <h2 class= 'pageheader'>{{user.name}}</h2>\n    <div class=\"row\">\n      <div class=\"col-xs-9\">{{ user.username }}</div>\n    </div>\n    <div class=\"row\">\n      <div class=\"col-xs-9\">{{ user.email }}</div>\n    </div>\n    <ul>\n      <li *ngFor=\"let bill of bills\" ><button (click)='this.deleteBill(bill)'> Delete this bill</button>\n        <div> date:  {{this.stringify(bill.date).slice(9,11)}}/{{this.stringify(bill.date).slice(6,8)}}/{{this.stringify(bill.date).slice(3,5)}} </div> \n        <div> description:    {{ bill.description }} </div>\n        <div> price:           {{ bill.value }} \n\n      \n        </div>\n      </li>\n      <li *ngIf=\"authService.loggedIn()\"><button (click)='this.addBill()'> Add Bill </button></li>\n    </ul>\n  \n\n    <div [hidden]=\"!modeadd\">\n      <h1>Register Form</h1>\n      <form (ngSubmit)=\"onSubmit()\" #registerForm=\"ngForm\">\n\n        <div class=\"form-group\">\n            <label for=\"date\">Date</label>\n            <input type=\"date\" class=\"date\" id=\"date\"\n                     [(ngModel)]=\"this.bill.date\" name=\"date\">\n        </div>\n\n        <div class=\"form-group\">\n          <label for=\"description\">Description</label>\n          <input type=\"text\" class=\"form-control\" id=\"description\" required\n                 [(ngModel)]=\"this.bill.description\" name=\"description\">\n          </div>\n   \n        <div class=\"form-group\">\n          <label for=\"value\">Value</label>\n          <input type=\"text\" class=\"form-control\" id=\"value\"\n                 [(ngModel)]=\"this.bill.value\" name=\"value\">\n        </div>\n        <button type=\"submit\" class=\"btn btn-success\" [disabled]=\"!registerForm.form.valid\">Submit</button>\n      </form> \n  </div>\n\n    \n\n</div>\n\n\n\n"
 
 /***/ }),
 
@@ -837,6 +893,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _user__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../user */ "./src/app/user.ts");
 /* harmony import */ var _auth_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../auth.service */ "./src/app/auth.service.ts");
 /* harmony import */ var _message_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../message.service */ "./src/app/message.service.ts");
+/* harmony import */ var _bill__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../bill */ "./src/app/bill.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -851,26 +908,62 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var ProfileComponent = /** @class */ (function () {
     function ProfileComponent(messageService, authService, router) {
         this.messageService = messageService;
         this.authService = authService;
         this.router = router;
         this.user = new _user__WEBPACK_IMPORTED_MODULE_2__["User"]();
+        this.bills = [];
+        this.modeadd = false;
+        this.bill = new _bill__WEBPACK_IMPORTED_MODULE_5__["Bill"]();
     }
     ProfileComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.authService.getProfile().subscribe(function (profile) {
-            _this.user1 = profile['user'];
-            _this.user.name = _this.user1['name'];
-            _this.user.username = _this.user1['username'];
-            _this.user.email = _this.user1['email'];
-            _this.user.password = _this.user1['password'];
+            _this.user = profile['user'];
+            _this.bills = _this.user['bills'];
         }, function (err) {
-            console.log(err);
-            _this.messageService.add('unauthorized to login');
+            _this.messageService.add('cannot login');
             return false;
         });
+    };
+    ProfileComponent.prototype.addBill = function () {
+        this.modeadd = true;
+    };
+    ProfileComponent.prototype.onSubmit = function () {
+        var _this = this;
+        if (!this.modeadd) {
+            return null;
+        }
+        this.modeadd = false;
+        this.authService.addBill(this.bill).subscribe(function (data) {
+            if (data.success) {
+                _this.messageService.add(data.msg + ': you have successfully added your bill');
+                _this.ngOnInit();
+            }
+            else {
+                _this.messageService.add(data.msg + ': something went wrong, please edit');
+            }
+        });
+    };
+    ProfileComponent.prototype.deleteBill = function (bill) {
+        var _this = this;
+        console.log(bill);
+        this.authService.deleteBill(bill).subscribe(function (data) {
+            console.log(data);
+            if (data.success) {
+                _this.messageService.add(data.msg + ': you have successfully deleted your bill');
+                _this.ngOnInit();
+            }
+            else {
+                _this.messageService.add(data.msg + ': something went wrong, please edit');
+            }
+        });
+    };
+    ProfileComponent.prototype.stringify = function (date) {
+        return JSON.stringify(date);
     };
     ProfileComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -970,14 +1063,11 @@ var RegisterComponent = /** @class */ (function () {
         else {
             this.submitted = true;
             this.authService.registerUser(this.user).subscribe(function (data) {
-                console.log(data);
                 if (data.success) {
                     _this.messageService.add(data.msg + ': you are registered and ready to login');
-                    // this.router.navigate(['/login']);
                 }
                 else {
                     _this.messageService.add(data.msg + ': something went wrong, please edit');
-                    // this.router.navigate(['/register']);
                 }
             });
         }
