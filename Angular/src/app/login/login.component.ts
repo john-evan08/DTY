@@ -32,7 +32,6 @@ export class LoginComponent implements OnInit {
 
     this.messageService.add(this.user.username);
     this.authService.authenticateUser(user2).subscribe(data => {
-      console.log(data);
       if (data.success) {
         this.authService.storeUserData(data.token, data.user);
         this.messageService.add('login succeeded');

@@ -62,6 +62,73 @@ export class AuthService {
     }
   }
 
+  getUsers(): Observable<Data> {
+    this.loadToken();
+    if (this.authToken) {
+      const httpOptions2 = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': this.authToken
+        })
+      };
+    return this.http.get<Data>('http://localhost:3000/users/profile/userlist', httpOptions2)
+    .pipe(
+      catchError(this.handleError)
+    );
+    } else {
+      return this.http.get<Data>('http://localhost:3000/users/profile/userlist', httpOptions)
+    .pipe(
+      catchError(this.handleError)
+    );
+    }
+  }
+
+  deleteUser(user): Observable<Data> {
+    const id: string = user['_id'] ;
+    const url = 'http://localhost:3000/users/profile/userlist/' + id;
+    this.loadToken();
+    if (this.authToken) {
+      const httpOptions2 = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': this.authToken
+        })
+      };
+    return this.http.delete<Data>(url, httpOptions2)
+    .pipe(
+      catchError(this.handleError)
+    );
+    } else {
+      return this.http.delete<Data>(url, httpOptions)
+    .pipe(
+      catchError(this.handleError)
+    );
+    }
+  }
+
+  adminUser(user): Observable<Data> {
+    const id: string = user['_id'] ;
+    const url = 'http://localhost:3000/users/profile/userlist/' + id;
+    this.loadToken();
+    if (this.authToken) {
+      const httpOptions2 = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': this.authToken
+        })
+      };
+    return this.http.put<Data>(url, {}, httpOptions2)
+    .pipe(
+      catchError(this.handleError)
+    );
+    } else {
+      return this.http.put<Data>(url, {}, httpOptions)
+    .pipe(
+      catchError(this.handleError)
+    );
+    }
+  }
+
   addBill(bill: Bill): Observable<Data> {
     this.loadToken();
     if (this.authToken) {

@@ -14,6 +14,7 @@ router.post('/register', (req, res, next) => {
         email: req.body.email,
         username: req.body.username,
         password: req.body.password,
+        admin: false,
         bills: []
         
     });
@@ -57,7 +58,7 @@ router.post('/authenticate', (req, res, next) => {
             }
           });
         } else {
-          return res.json({success: false, msg: 'Wrong password'});
+          return res.json({success: false, msg: 'Wrong password', user});
         }
       });
     });
@@ -69,8 +70,60 @@ router.get('/profile', passport.authenticate('jwt', {session:false}), (req, res,
 });
 
 
-router.put('/profile', passport.authenticate('jwt', {session:false}), (req, res, next) => {
+// AdminProfile
 
+
+router.get('/profile/userlist', (req, res, next) => {
+  passport.authenticate('jwt', (err, user, info) => {
+    if (user)
+        // check user's role for premium or not
+        if (user.admin){
+          User.find({}, function(err, users) {
+          res.json({success: true, msg: 'usersList displayed', users: users});});
+        } else { 
+             res.json({succes: false, msg: 'sorry you are not admin'});}
+    else{
+        // return items even if no authentication is present, instead of 401 response
+            res.json({success: false, msg: 'not logged in'});
+  }})(req, res, next);
+});
+
+router.delete('/profile/userlist/:id', (req, res, next) => {
+  passport.authenticate('jwt', (err, user, info) => {
+    if (user)
+        // check user's role for premium or not
+        if (user.admin){
+          User.findByIdAndRemove(req.params.id, function(err, doc){
+          if(err) throw error;
+          else {res.json({success: true, msg: 'user deleted'});}});
+        } else { 
+             res.json({success: false, msg: 'sorry you are not admin'});}
+    else{
+        // return items even if no authentication is present, instead of 401 response
+            res.json({success: false, msg: 'not logged in'});
+  }})(req, res, next);
+});
+
+router.put('/profile/userlist/:id', (req, res, next) => {
+  passport.authenticate('jwt', (err, user, info) => {
+    if (user)
+        // check user's role for premium or not
+        if (user.admin){
+          User.findByIdAndUpdate(req.params.id, {
+             admin: true},
+             function(err, doc){
+          if(err) throw error;
+          else {res.json({success: true, msg: 'user is now admin'});}});
+        } else { 
+             res.json({success: false, msg: 'sorry you are not admin'});}
+    else{
+        // return items even if no authentication is present, instead of 401 response
+            res.json({success: false, msg: 'not logged in'});
+  }})(req, res, next);
+});
+
+
+router.put('/profile', passport.authenticate('jwt', {session:false}), (req, res, next) => {
   const bill = {
     date: req.body.date,
     description: req.body.description,
@@ -78,7 +131,7 @@ router.put('/profile', passport.authenticate('jwt', {session:false}), (req, res,
   }
   const id = req.user._id;
 
-  
+
   User.getUserByID(id, (err, user) => {
     if (err) throw err;
     user.bills.push(bill);

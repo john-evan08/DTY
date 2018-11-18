@@ -165,6 +165,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _messages_messages_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./messages/messages.component */ "./src/app/messages/messages.component.ts");
 /* harmony import */ var _validate_service__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./validate.service */ "./src/app/validate.service.ts");
 /* harmony import */ var _auth_service__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./auth.service */ "./src/app/auth.service.ts");
+/* harmony import */ var _userbills_userbills_component__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./userbills/userbills.component */ "./src/app/userbills/userbills.component.ts");
+/* harmony import */ var _userlist_userlist_component__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./userlist/userlist.component */ "./src/app/userlist/userlist.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -175,6 +177,8 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 
 
  // <-- NgModel lives here
+
+
 
 
 
@@ -199,7 +203,9 @@ var AppModule = /** @class */ (function () {
                 _navbar_navbar_component__WEBPACK_IMPORTED_MODULE_9__["NavbarComponent"],
                 _profile_profile_component__WEBPACK_IMPORTED_MODULE_10__["ProfileComponent"],
                 _register_register_component__WEBPACK_IMPORTED_MODULE_11__["RegisterComponent"],
-                _messages_messages_component__WEBPACK_IMPORTED_MODULE_12__["MessagesComponent"]
+                _messages_messages_component__WEBPACK_IMPORTED_MODULE_12__["MessagesComponent"],
+                _userbills_userbills_component__WEBPACK_IMPORTED_MODULE_15__["UserbillsComponent"],
+                _userlist_userlist_component__WEBPACK_IMPORTED_MODULE_16__["UserlistComponent"]
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
@@ -333,6 +339,61 @@ var AuthService = /** @class */ (function () {
         }
         else {
             return this.http.get('http://localhost:3000/users/profile', httpOptions)
+                .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError));
+        }
+    };
+    AuthService.prototype.getUsers = function () {
+        this.loadToken();
+        if (this.authToken) {
+            var httpOptions2 = {
+                headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpHeaders"]({
+                    'Content-Type': 'application/json',
+                    'Authorization': this.authToken
+                })
+            };
+            return this.http.get('http://localhost:3000/users/profile/userlist', httpOptions2)
+                .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError));
+        }
+        else {
+            return this.http.get('http://localhost:3000/users/profile/userlist', httpOptions)
+                .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError));
+        }
+    };
+    AuthService.prototype.deleteUser = function (user) {
+        var id = user['_id'];
+        var url = 'http://localhost:3000/users/profile/userlist/' + id;
+        this.loadToken();
+        if (this.authToken) {
+            var httpOptions2 = {
+                headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpHeaders"]({
+                    'Content-Type': 'application/json',
+                    'Authorization': this.authToken
+                })
+            };
+            return this.http.delete(url, httpOptions2)
+                .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError));
+        }
+        else {
+            return this.http.delete(url, httpOptions)
+                .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError));
+        }
+    };
+    AuthService.prototype.adminUser = function (user) {
+        var id = user['_id'];
+        var url = 'http://localhost:3000/users/profile/userlist/' + id;
+        this.loadToken();
+        if (this.authToken) {
+            var httpOptions2 = {
+                headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpHeaders"]({
+                    'Content-Type': 'application/json',
+                    'Authorization': this.authToken
+                })
+            };
+            return this.http.put(url, {}, httpOptions2)
+                .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError));
+        }
+        else {
+            return this.http.put(url, {}, httpOptions)
                 .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError));
         }
     };
@@ -576,7 +637,7 @@ var HomeComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container\">\n    <div [hidden]=\"submitted\">\n      <h1>Register Form</h1>\n      <form (ngSubmit)=\"onLogin()\" #registerForm=\"ngForm\">\n   \n        <div class=\"form-group\">\n          <label for=\"username\">Username</label>\n          <input type=\"text\" class=\"form-control\" id=\"username\"\n                 [(ngModel)]=\"user.username\" name=\"username\">\n        </div>\n  \n        <div class=\"form-group\">\n          <label for=\"password\">password</label>\n          <input type=\"password\" class=\"form-control\" id=\"password\" required\n                 [(ngModel)]=\"user.password\" name=\"password\"\n                 #name=\"ngModel\">\n          <div [hidden]=\"name.valid || name.pristine\"\n               class=\"alert alert-danger\">\n            Password is required\n          </div>\n        </div>\n   \n        <button type=\"submit\" class=\"btn btn-success\" [disabled]=\"!registerForm.form.valid\">Login</button>\n        <button type=\"button\" class=\"btn btn-default\" (click)=\"newUser(); registerForm.reset()\">New User</button>\n      </form>\n    </div>\n   \n    <div [hidden]=\"!submitted\">\n      <h2>You submitted the following:</h2>\n      <div class=\"row\">\n        <div class=\"col-xs-3\">Name</div>\n        <div class=\"col-xs-9\">{{ user.name }}</div>\n      </div>\n      <div class=\"row\">\n        <div class=\"col-xs-3\">username</div>\n        <div class=\"col-xs-9\">{{ user.username }}</div>\n      </div>\n      <div class=\"row\">\n        <div class=\"col-xs-3\">email</div>\n        <div class=\"col-xs-9\">{{ user.email }}</div>\n      </div>\n      <br>\n      <button class=\"btn btn-primary\" (click)=\"submitted=false\">Edit</button>\n    </div>\n  </div>"
+module.exports = "<div class=\"container\">\n    <div [hidden]=\"submitted\">\n      <h1>Login</h1>\n      <form (ngSubmit)=\"onLogin()\" #registerForm=\"ngForm\">\n   \n        <div class=\"form-group\">\n          <label for=\"username\">Username</label>\n          <input type=\"text\" class=\"form-control\" id=\"username\"\n                 [(ngModel)]=\"user.username\" name=\"username\">\n        </div>\n  \n        <div class=\"form-group\">\n          <label for=\"password\">password</label>\n          <input type=\"password\" class=\"form-control\" id=\"password\" required\n                 [(ngModel)]=\"user.password\" name=\"password\"\n                 #name=\"ngModel\">\n          <div [hidden]=\"name.valid || name.pristine\"\n               class=\"alert alert-danger\">\n            Password is required\n          </div>\n        </div>\n   \n        <button type=\"submit\" class=\"btn btn-success\" [disabled]=\"!registerForm.form.valid\">Login</button>\n        <button type=\"button\" class=\"btn btn-default\" (click)=\"newUser(); registerForm.reset()\">New User</button>\n      </form>\n    </div>\n   \n    <div [hidden]=\"!submitted\">\n      <h2>You submitted the following:</h2>\n      <div class=\"row\">\n        <div class=\"col-xs-3\">Name</div>\n        <div class=\"col-xs-9\">{{ user.name }}</div>\n      </div>\n      <div class=\"row\">\n        <div class=\"col-xs-3\">username</div>\n        <div class=\"col-xs-9\">{{ user.username }}</div>\n      </div>\n      <div class=\"row\">\n        <div class=\"col-xs-3\">email</div>\n        <div class=\"col-xs-9\">{{ user.email }}</div>\n      </div>\n      <br>\n      <button class=\"btn btn-primary\" (click)=\"submitted=false\">Edit</button>\n    </div>\n  </div>"
 
 /***/ }),
 
@@ -638,7 +699,6 @@ var LoginComponent = /** @class */ (function () {
         };
         this.messageService.add(this.user.username);
         this.authService.authenticateUser(user2).subscribe(function (data) {
-            console.log(data);
             if (data.success) {
                 _this.authService.storeUserData(data.token, data.user);
                 _this.messageService.add('login succeeded');
@@ -863,7 +923,7 @@ var NavbarComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf='user'>\n  <h2 class= 'pageheader'>{{user.name}}</h2>\n    <div class=\"row\">\n      <div class=\"col-xs-9\">{{ user.username }}</div>\n    </div>\n    <div class=\"row\">\n      <div class=\"col-xs-9\">{{ user.email }}</div>\n    </div>\n    <ul>\n      <li *ngFor=\"let bill of bills\" ><button (click)='this.deleteBill(bill)'> Delete this bill</button>\n        <div> date:  {{this.stringify(bill.date).slice(9,11)}}/{{this.stringify(bill.date).slice(6,8)}}/{{this.stringify(bill.date).slice(3,5)}} </div> \n        <div> description:    {{ bill.description }} </div>\n        <div> price:           {{ bill.value }} \n\n      \n        </div>\n      </li>\n      <li *ngIf=\"authService.loggedIn()\"><button (click)='this.addBill()'> Add Bill </button></li>\n    </ul>\n  \n\n    <div [hidden]=\"!modeadd\">\n      <h1>Register Form</h1>\n      <form (ngSubmit)=\"onSubmit()\" #registerForm=\"ngForm\">\n\n        <div class=\"form-group\">\n            <label for=\"date\">Date</label>\n            <input type=\"date\" class=\"date\" id=\"date\"\n                     [(ngModel)]=\"this.bill.date\" name=\"date\">\n        </div>\n\n        <div class=\"form-group\">\n          <label for=\"description\">Description</label>\n          <input type=\"text\" class=\"form-control\" id=\"description\" required\n                 [(ngModel)]=\"this.bill.description\" name=\"description\">\n          </div>\n   \n        <div class=\"form-group\">\n          <label for=\"value\">Value</label>\n          <input type=\"text\" class=\"form-control\" id=\"value\"\n                 [(ngModel)]=\"this.bill.value\" name=\"value\">\n        </div>\n        <button type=\"submit\" class=\"btn btn-success\" [disabled]=\"!registerForm.form.valid\">Submit</button>\n      </form> \n  </div>\n\n    \n\n</div>\n\n\n\n"
+module.exports = "<div *ngIf='user'>\n  <h2 class= 'pageheader'>{{user.name}}</h2>\n    <div class=\"row\">\n      <div class=\"col-xs-9\">{{ user.username }}</div>\n    </div>\n    <div class=\"row\">\n      <div class=\"col-xs-9\">{{ user.email }}</div>\n    </div>\n\n  <app-userbills *ngIf='!user[\"admin\"]' [bills]=bills></app-userbills>\n  <app-userlist *ngIf='user[\"admin\"]'></app-userlist>\n\n    \n\n</div>\n\n\n\n"
 
 /***/ }),
 
@@ -893,7 +953,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _user__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../user */ "./src/app/user.ts");
 /* harmony import */ var _auth_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../auth.service */ "./src/app/auth.service.ts");
 /* harmony import */ var _message_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../message.service */ "./src/app/message.service.ts");
-/* harmony import */ var _bill__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../bill */ "./src/app/bill.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -908,16 +967,13 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
-
 var ProfileComponent = /** @class */ (function () {
     function ProfileComponent(messageService, authService, router) {
         this.messageService = messageService;
         this.authService = authService;
         this.router = router;
-        this.user = new _user__WEBPACK_IMPORTED_MODULE_2__["User"]();
         this.bills = [];
-        this.modeadd = false;
-        this.bill = new _bill__WEBPACK_IMPORTED_MODULE_5__["Bill"]();
+        this.user = new _user__WEBPACK_IMPORTED_MODULE_2__["User"]();
     }
     ProfileComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -928,42 +984,6 @@ var ProfileComponent = /** @class */ (function () {
             _this.messageService.add('cannot login');
             return false;
         });
-    };
-    ProfileComponent.prototype.addBill = function () {
-        this.modeadd = true;
-    };
-    ProfileComponent.prototype.onSubmit = function () {
-        var _this = this;
-        if (!this.modeadd) {
-            return null;
-        }
-        this.modeadd = false;
-        this.authService.addBill(this.bill).subscribe(function (data) {
-            if (data.success) {
-                _this.messageService.add(data.msg + ': you have successfully added your bill');
-                _this.ngOnInit();
-            }
-            else {
-                _this.messageService.add(data.msg + ': something went wrong, please edit');
-            }
-        });
-    };
-    ProfileComponent.prototype.deleteBill = function (bill) {
-        var _this = this;
-        console.log(bill);
-        this.authService.deleteBill(bill).subscribe(function (data) {
-            console.log(data);
-            if (data.success) {
-                _this.messageService.add(data.msg + ': you have successfully deleted your bill');
-                _this.ngOnInit();
-            }
-            else {
-                _this.messageService.add(data.msg + ': something went wrong, please edit');
-            }
-        });
-    };
-    ProfileComponent.prototype.stringify = function (date) {
-        return JSON.stringify(date);
     };
     ProfileComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -1107,6 +1127,276 @@ var User = /** @class */ (function () {
     function User() {
     }
     return User;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/userbills/userbills.component.html":
+/*!****************************************************!*\
+  !*** ./src/app/userbills/userbills.component.html ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<ul>\n  <li *ngFor=\"let bill of bills\" >\n    <span>\n    <div> date:  {{this.stringify(bill.date).slice(9,11)}}/{{this.stringify(bill.date).slice(6,8)}}/{{this.stringify(bill.date).slice(3,5)}} </div> \n    <div> description:    {{ bill.description }} </div>\n    <div> price:           {{ bill.value }} </div></span>\n    <span><button (click)='this.deleteBill(bill)'> Delete this bill</button></span>\n  </li>\n</ul>\n  <div *ngIf=\"authService.loggedIn()\"><button (click)='this.addBill()'> Add Bill </button></div>\n\n\n\n<div [hidden]=\"!modeadd\">\n  <h1>Register Form</h1>\n  <form (ngSubmit)=\"onSubmit()\" #registerForm=\"ngForm\">\n\n    <div class=\"form-group\">\n        <label for=\"date\">Date</label>\n        <input type=\"date\" class=\"date\" id=\"date\"\n                 [(ngModel)]=\"this.bill.date\" name=\"date\">\n    </div>\n\n    <div class=\"form-group\">\n      <label for=\"description\">Description</label>\n      <input type=\"text\" class=\"form-control\" id=\"description\" required\n             [(ngModel)]=\"this.bill.description\" name=\"description\">\n      </div>\n\n    <div class=\"form-group\">\n      <label for=\"value\">Value</label>\n      <input type=\"text\" class=\"form-control\" id=\"value\"\n             [(ngModel)]=\"this.bill.value\" name=\"value\">\n    </div>\n    <button type=\"submit\" class=\"btn btn-success\" [disabled]=\"!registerForm.form.valid\">Submit</button>\n  </form> \n</div>\n"
+
+/***/ }),
+
+/***/ "./src/app/userbills/userbills.component.scss":
+/*!****************************************************!*\
+  !*** ./src/app/userbills/userbills.component.scss ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3VzZXJiaWxscy91c2VyYmlsbHMuY29tcG9uZW50LnNjc3MifQ== */"
+
+/***/ }),
+
+/***/ "./src/app/userbills/userbills.component.ts":
+/*!**************************************************!*\
+  !*** ./src/app/userbills/userbills.component.ts ***!
+  \**************************************************/
+/*! exports provided: UserbillsComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UserbillsComponent", function() { return UserbillsComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
+/* harmony import */ var _profile_profile_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../profile/profile.component */ "./src/app/profile/profile.component.ts");
+/* harmony import */ var _auth_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../auth.service */ "./src/app/auth.service.ts");
+/* harmony import */ var _message_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../message.service */ "./src/app/message.service.ts");
+/* harmony import */ var _bill__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../bill */ "./src/app/bill.ts");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+var UserbillsComponent = /** @class */ (function () {
+    function UserbillsComponent(messageService, authService, router, profile) {
+        this.messageService = messageService;
+        this.authService = authService;
+        this.router = router;
+        this.profile = profile;
+        this.bill = new _bill__WEBPACK_IMPORTED_MODULE_5__["Bill"]();
+        this.modeadd = false;
+    }
+    UserbillsComponent.prototype.ngOnInit = function () {
+    };
+    UserbillsComponent.prototype.addBill = function () {
+        this.modeadd = true;
+    };
+    UserbillsComponent.prototype.onSubmit = function () {
+        var _this = this;
+        if (!this.modeadd) {
+            return null;
+        }
+        this.modeadd = false;
+        this.authService.addBill(this.bill).subscribe(function (data) {
+            if (data.success) {
+                _this.messageService.add(data.msg + ': you have successfully added your bill');
+                _this.profile.ngOnInit();
+            }
+            else {
+                _this.messageService.add(data.msg + ': something went wrong, please edit');
+            }
+        });
+    };
+    UserbillsComponent.prototype.deleteBill = function (bill) {
+        var _this = this;
+        console.log(bill);
+        this.authService.deleteBill(bill).subscribe(function (data) {
+            console.log(data);
+            if (data.success) {
+                _this.messageService.add(data.msg + ': you have successfully deleted your bill');
+                _this.profile.ngOnInit();
+            }
+            else {
+                _this.messageService.add(data.msg + ': something went wrong, please edit');
+            }
+        });
+    };
+    UserbillsComponent.prototype.stringify = function (date) {
+        return JSON.stringify(date);
+    };
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Array)
+    ], UserbillsComponent.prototype, "bills", void 0);
+    UserbillsComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-userbills',
+            template: __webpack_require__(/*! ./userbills.component.html */ "./src/app/userbills/userbills.component.html"),
+            styles: [__webpack_require__(/*! ./userbills.component.scss */ "./src/app/userbills/userbills.component.scss")]
+        }),
+        __metadata("design:paramtypes", [_message_service__WEBPACK_IMPORTED_MODULE_4__["MessageService"],
+            _auth_service__WEBPACK_IMPORTED_MODULE_3__["AuthService"],
+            _angular_router__WEBPACK_IMPORTED_MODULE_1__["Router"],
+            _profile_profile_component__WEBPACK_IMPORTED_MODULE_2__["ProfileComponent"]])
+    ], UserbillsComponent);
+    return UserbillsComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/userlist/userlist.component.html":
+/*!**************************************************!*\
+  !*** ./src/app/userlist/userlist.component.html ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<div>\n<ul>\n    <li *ngFor=\"let user of users\" >\n      <span>\n      <div> name: {{user.name}}</div>\n      <div> username:    {{ user.username }} </div>\n      <div> email:       {{ user.email }} </div></span>\n      <div> admin:       {{user.admin}} </div>\n      <!--<button (click)='ShowBill'> see bills</button>-->\n      <span><button (click)='this.deleteUser(user)'> Delete this user</button>\n      <button (click)='this.adminUser(user)'> Make this user admin</button>\n      <button (click)='this.showBills(user)'> Show this user's bills</button></span>\n      \n    </li>\n  </ul>\n  <button (click)='this.showAllBills(user)'> Show all bills</button>\n</div>\n\n  <div *ngIf=\"modebills\">\n  {{this.user.name}}'s {{this.lenght(this.bills)}} bills\n  <ul *ngIf=\"bills\">\n      \n      <li *ngFor=\"let bill of bills\" >\n        <span>\n        <div> date:  {{this.stringify(bill.date).slice(9,11)}}/{{this.stringify(bill.date).slice(6,8)}}/{{this.stringify(bill.date).slice(3,5)}} </div> \n        <div> description:    {{ bill.description }} </div>\n        <div> price:           {{ bill.value }} </div></span>\n      </li>\n    </ul>\n    <button (click)='this.hideBills(user)'> Hide this user's bills</button>\n  </div>\n\n  <div *ngIf=\"modeallbills\">\n      <ul *ngIf=\"allbills\">\n      \n          <li *ngFor=\"let bill of allbills\" >\n            <span>\n            <div> date:  {{this.stringify(bill[0].date).slice(9,11)}}/{{this.stringify(bill[0].date).slice(6,8)}}/{{this.stringify(bill[0].date).slice(3,5)}} </div> \n            <div> description:    {{ bill[0].description }} </div>\n            <div> price:           {{ bill[0].value }} </div>\n            <div> user: {{bill[1].name}} </div></span>\n\n          </li>\n        </ul>\n        <button (click)='this.hideAllBills()'> Hide all bills</button>\n\n  </div>\n"
+
+/***/ }),
+
+/***/ "./src/app/userlist/userlist.component.scss":
+/*!**************************************************!*\
+  !*** ./src/app/userlist/userlist.component.scss ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3VzZXJsaXN0L3VzZXJsaXN0LmNvbXBvbmVudC5zY3NzIn0= */"
+
+/***/ }),
+
+/***/ "./src/app/userlist/userlist.component.ts":
+/*!************************************************!*\
+  !*** ./src/app/userlist/userlist.component.ts ***!
+  \************************************************/
+/*! exports provided: UserlistComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UserlistComponent", function() { return UserlistComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
+/* harmony import */ var _auth_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../auth.service */ "./src/app/auth.service.ts");
+/* harmony import */ var _message_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../message.service */ "./src/app/message.service.ts");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+var UserlistComponent = /** @class */ (function () {
+    function UserlistComponent(messageService, authService, router) {
+        this.messageService = messageService;
+        this.authService = authService;
+        this.router = router;
+        this.modebills = false;
+        this.modeallbills = false;
+        this.allbills = [];
+    }
+    UserlistComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.authService.getUsers().subscribe(function (res) {
+            if (res['success']) {
+                _this.users = res.users;
+                _this.messageService.add(res.msg);
+            }
+            else {
+                _this.messageService.add(res.msg);
+            }
+        }, function (err) {
+            _this.messageService.add('cannot get Users');
+            return false;
+        });
+    };
+    UserlistComponent.prototype.deleteUser = function (user) {
+        var _this = this;
+        this.authService.deleteUser(user).subscribe(function (res) {
+            if (res['success']) {
+                _this.ngOnInit();
+                _this.messageService.add(res.msg);
+            }
+            else {
+                _this.messageService.add(res.msg);
+            }
+        }, function (err) {
+            _this.messageService.add('cannot delete user');
+            return false;
+        });
+    };
+    UserlistComponent.prototype.adminUser = function (user) {
+        var _this = this;
+        this.authService.adminUser(user).subscribe(function (res) {
+            if (res['success']) {
+                _this.ngOnInit();
+                _this.messageService.add(res.msg);
+            }
+            else {
+                _this.messageService.add(res.msg);
+            }
+        }, function (err) {
+            _this.messageService.add('cannot put user admin');
+            return false;
+        });
+    };
+    UserlistComponent.prototype.showBills = function (user) {
+        this.user = user;
+        this.modebills = true;
+        this.bills = user.bills;
+    };
+    UserlistComponent.prototype.showAllBills = function () {
+        for (var _i = 0, _a = this.users; _i < _a.length; _i++) {
+            var user = _a[_i];
+            var bills = user['bills'];
+            for (var _b = 0, bills_1 = bills; _b < bills_1.length; _b++) {
+                var bill = bills_1[_b];
+                this.allbills.push(([bill, user]));
+            }
+        }
+        this.modeallbills = true;
+    };
+    UserlistComponent.prototype.hideBills = function (user) {
+        this.modebills = false;
+    };
+    UserlistComponent.prototype.hideAllBills = function () {
+        this.modeallbills = false;
+    };
+    UserlistComponent.prototype.stringify = function (date) {
+        return JSON.stringify(date);
+    };
+    UserlistComponent.prototype.lenght = function (bills) {
+        return bills.length;
+    };
+    UserlistComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-userlist',
+            template: __webpack_require__(/*! ./userlist.component.html */ "./src/app/userlist/userlist.component.html"),
+            styles: [__webpack_require__(/*! ./userlist.component.scss */ "./src/app/userlist/userlist.component.scss")]
+        }),
+        __metadata("design:paramtypes", [_message_service__WEBPACK_IMPORTED_MODULE_3__["MessageService"],
+            _auth_service__WEBPACK_IMPORTED_MODULE_2__["AuthService"],
+            _angular_router__WEBPACK_IMPORTED_MODULE_1__["Router"]])
+    ], UserlistComponent);
+    return UserlistComponent;
 }());
 
 

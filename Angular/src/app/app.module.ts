@@ -14,6 +14,8 @@ import { RegisterComponent } from './register/register.component';
 import { MessagesComponent } from './messages/messages.component';
 import { ValidateService } from './validate.service';
 import { AuthService } from './auth.service';
+import { UserbillsComponent } from './userbills/userbills.component';
+import { UserlistComponent } from './userlist/userlist.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { AuthService } from './auth.service';
     NavbarComponent,
     ProfileComponent,
     RegisterComponent,
-    MessagesComponent
+    MessagesComponent,
+    UserbillsComponent,
+    UserlistComponent
   ],
   imports: [
     BrowserModule,

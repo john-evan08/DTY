@@ -1,0 +1,47 @@
+<div>
+<ul>
+    <li *ngFor="let user of users" >
+      <span>
+      <div> name: {{user.name}}</div>
+      <div> username:    {{ user.username }} </div>
+      <div> email:       {{ user.email }} </div></span>
+      <div> admin:       {{user.admin}} </div>
+      <!--<button (click)='ShowBill'> see bills</button>-->
+      <span><button (click)='this.deleteUser(user)'> Delete this user</button>
+      <button (click)='this.adminUser(user)'> Make this user admin</button>
+      <button (click)='this.showBills(user)'> Show this user's bills</button></span>
+      
+    </li>
+  </ul>
+  <button (click)='this.showAllBills(user)'> Show all bills</button>
+</div>
+
+  <div *ngIf="modebills">
+  {{this.user.name}}'s {{this.lenght(this.bills)}} bills
+  <ul *ngIf="bills">
+      
+      <li *ngFor="let bill of bills" >
+        <span>
+        <div> date:  {{this.stringify(bill.date).slice(9,11)}}/{{this.stringify(bill.date).slice(6,8)}}/{{this.stringify(bill.date).slice(3,5)}} </div> 
+        <div> description:    {{ bill.description }} </div>
+        <div> price:           {{ bill.value }} </div></span>
+      </li>
+    </ul>
+    <button (click)='this.hideBills(user)'> Hide this user's bills</button>
+  </div>
+
+  <div *ngIf="modeallbills">
+      <ul *ngIf="allbills">
+      
+          <li *ngFor="let bill of allbills" >
+            <span>
+            <div> date:  {{this.stringify(bill[0].date).slice(9,11)}}/{{this.stringify(bill[0].date).slice(6,8)}}/{{this.stringify(bill[0].date).slice(3,5)}} </div> 
+            <div> description:    {{ bill[0].description }} </div>
+            <div> price:           {{ bill[0].value }} </div>
+            <div> user: {{bill[1].name}} </div></span>
+
+          </li>
+        </ul>
+        <button (click)='this.hideAllBills()'> Hide all bills</button>
+
+  </div>
