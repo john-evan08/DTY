@@ -7,6 +7,9 @@ const config = require('../config/database')
 const User = require('../models/user');
 require('../config/passport')(passport);
 
+const admin = require('../routes/users/admin');
+const manager = require('../routes/users/manager');
+
 //Register
 router.post('/register', (req, res, next) => {
     let newUser = new User({
@@ -70,59 +73,7 @@ router.get('/profile', passport.authenticate('jwt', {session:false}), (req, res,
 });
 
 
-// AdminProfile
-
-
-router.get('/profile/userlist', (req, res, next) => {
-  passport.authenticate('jwt', (err, user, info) => {
-    if (user)
-        // check user's role for premium or not
-        if (user.admin){
-          User.find({}, function(err, users) {
-          res.json({success: true, msg: 'usersList displayed', users: users});});
-        } else { 
-             res.json({succes: false, msg: 'sorry you are not admin'});}
-    else{
-        // return items even if no authentication is present, instead of 401 response
-            res.json({success: false, msg: 'not logged in'});
-  }})(req, res, next);
-});
-
-router.delete('/profile/userlist/:id', (req, res, next) => {
-  passport.authenticate('jwt', (err, user, info) => {
-    if (user)
-        // check user's role for premium or not
-        if (user.admin){
-          User.findByIdAndRemove(req.params.id, function(err, doc){
-          if(err) throw error;
-          else {res.json({success: true, msg: 'user deleted'});}});
-        } else { 
-             res.json({success: false, msg: 'sorry you are not admin'});}
-    else{
-        // return items even if no authentication is present, instead of 401 response
-            res.json({success: false, msg: 'not logged in'});
-  }})(req, res, next);
-});
-
-router.put('/profile/userlist/:id', (req, res, next) => {
-  passport.authenticate('jwt', (err, user, info) => {
-    if (user)
-        // check user's role for premium or not
-        if (user.admin){
-          User.findByIdAndUpdate(req.params.id, {
-             admin: true},
-             function(err, doc){
-          if(err) throw error;
-          else {res.json({success: true, msg: 'user is now admin'});}});
-        } else { 
-             res.json({success: false, msg: 'sorry you are not admin'});}
-    else{
-        // return items even if no authentication is present, instead of 401 response
-            res.json({success: false, msg: 'not logged in'});
-  }})(req, res, next);
-});
-
-
+//Add a bill
 router.put('/profile', passport.authenticate('jwt', {session:false}), (req, res, next) => {
   const bill = {
     date: req.body.date,
@@ -146,7 +97,7 @@ router.put('/profile', passport.authenticate('jwt', {session:false}), (req, res,
 });
 
   
-
+//Delete a bill
 router.delete('/profile/:id', passport.authenticate('jwt', {session:false}), (req, res, next) => {
   
   const id=req.params.id;
@@ -170,5 +121,11 @@ router.delete('/profile/:id', passport.authenticate('jwt', {session:false}), (re
 
 }});
 });
+
+//Admin users
+router.use('/admin', admin);
+//Manager users
+router.use('/manager',manager);
+
 
 module.exports = router;

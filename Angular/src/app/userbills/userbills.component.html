@@ -1,13 +1,18 @@
-<ul>
-  <li *ngFor="let bill of bills" >
-    <span>
-    <div> date:  {{this.stringify(bill.date).slice(9,11)}}/{{this.stringify(bill.date).slice(6,8)}}/{{this.stringify(bill.date).slice(3,5)}} </div> 
-    <div> description:    {{ bill.description }} </div>
-    <div> price:           {{ bill.value }} </div></span>
-    <span><button (click)='this.deleteBill(bill)'> Delete this bill</button></span>
-  </li>
-</ul>
-  <div *ngIf="authService.loggedIn()"><button (click)='this.addBill()'> Add Bill </button></div>
+<div class="card-deck mb-3 text-center">
+    <div class="card mb-4 shadow-sm" *ngFor="let bill of bills">
+          <div class="card-body">
+            <h5 class="card-title"> Bill </h5>
+            <div> date:  {{this.stringify(bill.date).slice(9,11)}}/{{this.stringify(bill.date).slice(6,8)}}/{{this.stringify(bill.date).slice(3,5)}} </div> 
+            <div> description:    {{ bill.description }} </div>
+            <div> price:           {{ bill.value }}€ </div>
+            <div class="card-header">
+                <button (click)='this.deleteBill(bill)'> Delete this bill</button>
+              </div>
+          </div>
+        </div>
+      <div *ngIf="authService.loggedIn()"><button (click)='this.addBill()'> Add Bill </button></div>
+      </div>
+    
 
 
 

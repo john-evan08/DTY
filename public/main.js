@@ -89,7 +89,7 @@ var AppRoutingModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div>\n<app-navbar></app-navbar>\n<div class=\"container\">\n  <router-outlet></router-outlet>\n</div>\n<footer>\n  <app-messages></app-messages>\n</footer>\n</div>\n"
+module.exports = "<app-navbar></app-navbar>\n\n\n<main role='main' class='container'>\n  <router-outlet></router-outlet>\n</main>\n  <app-messages></app-messages>\n"
 
 /***/ }),
 
@@ -211,7 +211,7 @@ var AppModule = /** @class */ (function () {
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
                 _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClientModule"],
                 _app_routing_module__WEBPACK_IMPORTED_MODULE_4__["AppRoutingModule"],
-                _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormsModule"]
+                _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormsModule"],
             ],
             providers: [_validate_service__WEBPACK_IMPORTED_MODULE_13__["ValidateService"], _auth_service__WEBPACK_IMPORTED_MODULE_14__["AuthService"]],
             bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_5__["AppComponent"]]
@@ -316,15 +316,17 @@ var AuthService = /** @class */ (function () {
     function AuthService(http) {
         this.http = http;
     }
-    // POST: Add a new hero to the database
+    // Register User
     AuthService.prototype.registerUser = function (user) {
         return this.http.post('http://localhost:3000/users/register', user, httpOptions)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError));
     };
+    // Authenticate User
     AuthService.prototype.authenticateUser = function (user) {
         return this.http.post('http://localhost:3000/users/authenticate', user, httpOptions)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError));
     };
+    // Go to Profile
     AuthService.prototype.getProfile = function () {
         this.loadToken();
         if (this.authToken) {
@@ -342,6 +344,7 @@ var AuthService = /** @class */ (function () {
                 .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError));
         }
     };
+    // Admin Profile
     AuthService.prototype.getUsers = function () {
         this.loadToken();
         if (this.authToken) {
@@ -351,17 +354,17 @@ var AuthService = /** @class */ (function () {
                     'Authorization': this.authToken
                 })
             };
-            return this.http.get('http://localhost:3000/users/profile/userlist', httpOptions2)
+            return this.http.get('http://localhost:3000/users/admin/userlist', httpOptions2)
                 .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError));
         }
         else {
-            return this.http.get('http://localhost:3000/users/profile/userlist', httpOptions)
+            return this.http.get('http://localhost:3000/users/admin/userlist', httpOptions)
                 .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError));
         }
     };
     AuthService.prototype.deleteUser = function (user) {
         var id = user['_id'];
-        var url = 'http://localhost:3000/users/profile/userlist/' + id;
+        var url = 'http://localhost:3000/users/admin/userlist/' + id;
         this.loadToken();
         if (this.authToken) {
             var httpOptions2 = {
@@ -380,7 +383,7 @@ var AuthService = /** @class */ (function () {
     };
     AuthService.prototype.adminUser = function (user) {
         var id = user['_id'];
-        var url = 'http://localhost:3000/users/profile/userlist/' + id;
+        var url = 'http://localhost:3000/users/admin/userlist/' + id;
         this.loadToken();
         if (this.authToken) {
             var httpOptions2 = {
@@ -397,6 +400,7 @@ var AuthService = /** @class */ (function () {
                 .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError));
         }
     };
+    // User Profile
     AuthService.prototype.addBill = function (bill) {
         this.loadToken();
         if (this.authToken) {
@@ -511,7 +515,7 @@ var Bill = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h2>\n  Dashboard\n</h2>\n\n<p>\n  Welcome to your dashboard\n</p>\n"
+module.exports = "<div class=\"pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center\">\n    <h1 class=\"display-4\">Dashboard</h1>\n    <p class=\"lead\">Welcome to your DashBoard</p>\n  </div>"
 
 /***/ }),
 
@@ -574,7 +578,7 @@ var DashboardComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h2>Home Page </h2>\n<p> Welcome to the Home Page </p>\n"
+module.exports = "<div class=\"pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center\">\n        <h1 class=\"display-4\">Home</h1>\n        <p class=\"lead\">Welcome to the Home page</p>\n      </div>\n"
 
 /***/ }),
 
@@ -777,7 +781,7 @@ var MessageService = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"messageService.messages.length\">\n\n  <h2>Messages</h2>\n  <button class=\"clear\"\n          (click)=\"messageService.clear()\">clear</button>\n  <div *ngFor='let message of messageService.messages'> {{message}} </div>\n\n</div>\n"
+module.exports = "<footer class=\"pt-4 my-md-5 pt-md-5 border-top\">\n<div class='container' *ngIf=\"messageService.messages.length\">\n\n  <h2>Messages</h2>\n  <button class=\"clear\"\n          (click)=\"messageService.clear()\">clear</button>\n  <div *ngFor='let message of messageService.messages'> {{message}} </div>\n\n</div>\n</footer>\n\n"
 
 /***/ }),
 
@@ -843,7 +847,7 @@ var MessagesComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<nav>      \n      <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a routerLink=\"/home\">Home</a></li>\n      \n      <li *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a routerLink=\"/dashboard\">Dashboard</a></li>\n      <li *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a routerLink=\"/login\">Login</a></li>\n      <li *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a routerLink=\"/profile\">Profile</a></li>\n      <li *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a routerLink=\"/register\">Register</a></li>\n      <li *ngIf=\"authService.loggedIn()\"><a (click)='onLogout()' href='#'> Log out </a></li>\n</nav>\n"
+module.exports = "<nav class=\"navbar navbar-expand navbar-light bg-light\">      \n    <div class=\"collapse navbar-collapse\" id=\"navbarNav\">\n      <ul class=\"navbar-nav\">\n      <li class=\"nav-item active\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a class=\"nav-link\" routerLink=\"/home\">Home</a></li>\n      \n      <li class=\"nav-item \" *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a class=\"nav-link\" routerLink=\"/dashboard\">Dashboard</a></li>\n      <li class=\"nav-item \" *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a class=\"nav-link\" routerLink=\"/login\">Login</a></li>\n      <li class=\"nav-item \" *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a class=\"nav-link\" routerLink=\"/profile\">Profile</a></li>\n      <li class=\"nav-item \" *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a class=\"nav-link\" routerLink=\"/register\">Register</a></li>\n      <li class=\"nav-item \" *ngIf=\"authService.loggedIn()\"><a class=\"nav-link\" (click)='onLogout()' href='#'> Log out </a></li>\n      </ul> \n    </div>\n</nav>\n"
 
 /***/ }),
 
@@ -923,7 +927,7 @@ var NavbarComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf='user'>\n  <h2 class= 'pageheader'>{{user.name}}</h2>\n    <div class=\"row\">\n      <div class=\"col-xs-9\">{{ user.username }}</div>\n    </div>\n    <div class=\"row\">\n      <div class=\"col-xs-9\">{{ user.email }}</div>\n    </div>\n\n  <app-userbills *ngIf='!user[\"admin\"]' [bills]=bills></app-userbills>\n  <app-userlist *ngIf='user[\"admin\"]'></app-userlist>\n\n    \n\n</div>\n\n\n\n"
+module.exports = "<div *ngIf='user'>\n  <h2 class= 'pageheader'>{{user.name}}</h2>\n    <div class=\"row\">\n      <div class=\"col-xs-9\">{{ user.username }}</div>\n    </div>\n    <div class=\"row\">\n      <div class=\"col-xs-9\">{{ user.email }}</div>\n    </div>\n\n  <!-- Page personnalisée selon le rôle-->\n  <app-userbills *ngIf='!user[\"admin\"]' [bills]=bills></app-userbills>\n  <app-userlist *ngIf='user[\"admin\"]'></app-userlist>\n\n    \n\n</div>\n\n\n\n"
 
 /***/ }),
 
@@ -1140,7 +1144,7 @@ var User = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<ul>\n  <li *ngFor=\"let bill of bills\" >\n    <span>\n    <div> date:  {{this.stringify(bill.date).slice(9,11)}}/{{this.stringify(bill.date).slice(6,8)}}/{{this.stringify(bill.date).slice(3,5)}} </div> \n    <div> description:    {{ bill.description }} </div>\n    <div> price:           {{ bill.value }} </div></span>\n    <span><button (click)='this.deleteBill(bill)'> Delete this bill</button></span>\n  </li>\n</ul>\n  <div *ngIf=\"authService.loggedIn()\"><button (click)='this.addBill()'> Add Bill </button></div>\n\n\n\n<div [hidden]=\"!modeadd\">\n  <h1>Register Form</h1>\n  <form (ngSubmit)=\"onSubmit()\" #registerForm=\"ngForm\">\n\n    <div class=\"form-group\">\n        <label for=\"date\">Date</label>\n        <input type=\"date\" class=\"date\" id=\"date\"\n                 [(ngModel)]=\"this.bill.date\" name=\"date\">\n    </div>\n\n    <div class=\"form-group\">\n      <label for=\"description\">Description</label>\n      <input type=\"text\" class=\"form-control\" id=\"description\" required\n             [(ngModel)]=\"this.bill.description\" name=\"description\">\n      </div>\n\n    <div class=\"form-group\">\n      <label for=\"value\">Value</label>\n      <input type=\"text\" class=\"form-control\" id=\"value\"\n             [(ngModel)]=\"this.bill.value\" name=\"value\">\n    </div>\n    <button type=\"submit\" class=\"btn btn-success\" [disabled]=\"!registerForm.form.valid\">Submit</button>\n  </form> \n</div>\n"
+module.exports = "<div class=\"card-deck mb-3 text-center\">\n    <div class=\"card mb-4 shadow-sm\" *ngFor=\"let bill of bills\">\n          <div class=\"card-body\">\n            <h5 class=\"card-title\"> Bill </h5>\n            <div> date:  {{this.stringify(bill.date).slice(9,11)}}/{{this.stringify(bill.date).slice(6,8)}}/{{this.stringify(bill.date).slice(3,5)}} </div> \n            <div> description:    {{ bill.description }} </div>\n            <div> price:           {{ bill.value }}€ </div>\n            <div class=\"card-header\">\n                <button (click)='this.deleteBill(bill)'> Delete this bill</button>\n              </div>\n          </div>\n        </div>\n      <div *ngIf=\"authService.loggedIn()\"><button (click)='this.addBill()'> Add Bill </button></div>\n      </div>\n    \n\n\n\n<div [hidden]=\"!modeadd\">\n  <h1>Register Form</h1>\n  <form (ngSubmit)=\"onSubmit()\" #registerForm=\"ngForm\">\n\n    <div class=\"form-group\">\n        <label for=\"date\">Date</label>\n        <input type=\"date\" class=\"date\" id=\"date\"\n                 [(ngModel)]=\"this.bill.date\" name=\"date\">\n    </div>\n\n    <div class=\"form-group\">\n      <label for=\"description\">Description</label>\n      <input type=\"text\" class=\"form-control\" id=\"description\" required\n             [(ngModel)]=\"this.bill.description\" name=\"description\">\n      </div>\n\n    <div class=\"form-group\">\n      <label for=\"value\">Value</label>\n      <input type=\"text\" class=\"form-control\" id=\"value\"\n             [(ngModel)]=\"this.bill.value\" name=\"value\">\n    </div>\n    <button type=\"submit\" class=\"btn btn-success\" [disabled]=\"!registerForm.form.valid\">Submit</button>\n  </form> \n</div>\n"
 
 /***/ }),
 
@@ -1262,7 +1266,7 @@ var UserbillsComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div>\n<ul>\n    <li *ngFor=\"let user of users\" >\n      <span>\n      <div> name: {{user.name}}</div>\n      <div> username:    {{ user.username }} </div>\n      <div> email:       {{ user.email }} </div></span>\n      <div> admin:       {{user.admin}} </div>\n      <!--<button (click)='ShowBill'> see bills</button>-->\n      <span><button (click)='this.deleteUser(user)'> Delete this user</button>\n      <button (click)='this.adminUser(user)'> Make this user admin</button>\n      <button (click)='this.showBills(user)'> Show this user's bills</button></span>\n      \n    </li>\n  </ul>\n  <button (click)='this.showAllBills(user)'> Show all bills</button>\n</div>\n\n  <div *ngIf=\"modebills\">\n  {{this.user.name}}'s {{this.lenght(this.bills)}} bills\n  <ul *ngIf=\"bills\">\n      \n      <li *ngFor=\"let bill of bills\" >\n        <span>\n        <div> date:  {{this.stringify(bill.date).slice(9,11)}}/{{this.stringify(bill.date).slice(6,8)}}/{{this.stringify(bill.date).slice(3,5)}} </div> \n        <div> description:    {{ bill.description }} </div>\n        <div> price:           {{ bill.value }} </div></span>\n      </li>\n    </ul>\n    <button (click)='this.hideBills(user)'> Hide this user's bills</button>\n  </div>\n\n  <div *ngIf=\"modeallbills\">\n      <ul *ngIf=\"allbills\">\n      \n          <li *ngFor=\"let bill of allbills\" >\n            <span>\n            <div> date:  {{this.stringify(bill[0].date).slice(9,11)}}/{{this.stringify(bill[0].date).slice(6,8)}}/{{this.stringify(bill[0].date).slice(3,5)}} </div> \n            <div> description:    {{ bill[0].description }} </div>\n            <div> price:           {{ bill[0].value }} </div>\n            <div> user: {{bill[1].name}} </div></span>\n\n          </li>\n        </ul>\n        <button (click)='this.hideAllBills()'> Hide all bills</button>\n\n  </div>\n"
+module.exports = "<div class=\"card-deck mb-3\">\n\n    <div class=\"card\" *ngFor=\"let user of users\" >\n      <span>\n      <div> name: {{user.name}}</div>\n      <div> username:    {{ user.username }} </div>\n      <div> email:       {{ user.email }} </div></span>\n      <div> admin:       {{user.admin}} </div>\n      <span><button (click)='this.deleteUser(user)'> Delete this user</button>\n      <button (click)='this.adminUser(user)'> Make this user admin</button>\n      <button (click)='this.showBills(user)'> Show this user's bills</button></span>\n      \n      </div>\n  <button (click)='this.showAllBills(user)'> Show all bills</button>\n</div>\n\n<!-- on réécrit le code au lieu d'appeler le component userbills car\ncelui-ci nécessite l'authentification du bon user-->\n\n  <div *ngIf=\"modebills\">\n \n  {{this.user.name}}'s {{this.lenght(this.bills)}} bills\n  <div class=\"card-group\" *ngIf=\"bills\">\n      \n      <div class=\"card\" *ngFor=\"let bill of bills\" >\n        <span>\n        <div> date:  {{this.stringify(bill.date).slice(9,11)}}/{{this.stringify(bill.date).slice(6,8)}}/{{this.stringify(bill.date).slice(3,5)}} </div> \n        <div> description:    {{ bill.description }} </div>\n        <div> price:           {{ bill.value }} </div></span>\n        </div>\n      </div>\n    <button (click)='this.hideBills(user)'> Hide this user's bills</button>\n  </div>\n\n  <div *ngIf=\"modeallbills\">\n      <div class=\"card-group\" *ngIf=\"allbills\">\n      \n          <div class=\"card\" *ngFor=\"let bill of allbills\" >\n            <span>\n            <div> date:  {{this.stringify(bill[0].date).slice(9,11)}}/{{this.stringify(bill[0].date).slice(6,8)}}/{{this.stringify(bill[0].date).slice(3,5)}} </div> \n            <div> description:    {{ bill[0].description }} </div>\n            <div> price:           {{ bill[0].value }} </div>\n            <div> user: {{bill[1].name}} </div></span>\n\n            </div>\n        </div>\n        <button (click)='this.hideAllBills()'> Hide all bills</button>\n\n  </div>\n"
 
 /***/ }),
 

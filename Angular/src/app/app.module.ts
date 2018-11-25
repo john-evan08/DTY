@@ -34,7 +34,7 @@ import { UserlistComponent } from './userlist/userlist.component';
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
   ],
   providers: [ValidateService, AuthService],
   bootstrap: [AppComponent]

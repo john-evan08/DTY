@@ -26,14 +26,14 @@ export class AuthService {
 
   constructor (private http: HttpClient) { }
 
-  // POST: Add a new hero to the database
+  // Register User
   registerUser (user: User): Observable<Data> {
     return this.http.post<Data>('http://localhost:3000/users/register', user, httpOptions)
     .pipe(
       catchError(this.handleError)
     );
   }
-
+  // Authenticate User
   authenticateUser (user): Observable<Data> {
     return this.http.post<Data>('http://localhost:3000/users/authenticate', user, httpOptions)
     .pipe(
@@ -41,6 +41,7 @@ export class AuthService {
     );
   }
 
+  // Go to Profile
   getProfile(): Observable<Data> {
     this.loadToken();
     if (this.authToken) {
@@ -62,6 +63,7 @@ export class AuthService {
     }
   }
 
+   // Admin Profile
   getUsers(): Observable<Data> {
     this.loadToken();
     if (this.authToken) {
@@ -71,12 +73,12 @@ export class AuthService {
           'Authorization': this.authToken
         })
       };
-    return this.http.get<Data>('http://localhost:3000/users/profile/userlist', httpOptions2)
+    return this.http.get<Data>('http://localhost:3000/users/admin/userlist', httpOptions2)
     .pipe(
       catchError(this.handleError)
     );
     } else {
-      return this.http.get<Data>('http://localhost:3000/users/profile/userlist', httpOptions)
+      return this.http.get<Data>('http://localhost:3000/users/admin/userlist', httpOptions)
     .pipe(
       catchError(this.handleError)
     );
@@ -85,7 +87,7 @@ export class AuthService {
 
   deleteUser(user): Observable<Data> {
     const id: string = user['_id'] ;
-    const url = 'http://localhost:3000/users/profile/userlist/' + id;
+    const url = 'http://localhost:3000/users/admin/userlist/' + id;
     this.loadToken();
     if (this.authToken) {
       const httpOptions2 = {
@@ -108,7 +110,7 @@ export class AuthService {
 
   adminUser(user): Observable<Data> {
     const id: string = user['_id'] ;
-    const url = 'http://localhost:3000/users/profile/userlist/' + id;
+    const url = 'http://localhost:3000/users/admin/userlist/' + id;
     this.loadToken();
     if (this.authToken) {
       const httpOptions2 = {
@@ -129,6 +131,7 @@ export class AuthService {
     }
   }
 
+ // User Profile
   addBill(bill: Bill): Observable<Data> {
     this.loadToken();
     if (this.authToken) {
